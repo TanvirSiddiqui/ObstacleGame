@@ -6,6 +6,7 @@ public class Movement : MonoBehaviour
 {
     [SerializeField]float speed = 2.0f;
     int noOfHit = 0;
+    bool playerMovement = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +16,12 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float x = Input.GetAxis("Horizontal")*Time.deltaTime*speed;
-        float z = Input.GetAxis("Vertical")*Time.deltaTime*speed;
+        if (playerMovement) {
+            float x = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
+            float z = Input.GetAxis("Vertical") * Time.deltaTime * speed;
 
-        transform.Translate(x, 0, z);
+            transform.Translate(x, 0, z);
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -28,7 +31,16 @@ public class Movement : MonoBehaviour
             noOfHit++;   // noOfhit= noOfHit+1 
             Debug.Log("collided with " + collision.gameObject.name);
             Debug.Log("Number of hit: " + noOfHit);
-            collision.gameObject.tag = "Hit";
+            if (collision.gameObject.tag != "Game End")
+            {
+                collision.gameObject.tag = "Hit";
+            }
+        }
+
+        if(collision.gameObject.tag=="Game End")
+        {
+            playerMovement = false;
+            Debug.Log("Game Over");
         }
    
     }
